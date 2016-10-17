@@ -32,12 +32,12 @@ ServiceSimulator:
 						> turnedAway++
 					> else
 						> Add cust to the cashier with the least cust's
-						> totWaitTime++
 				> For each cashier, service customer
 					> If timeLimit is reached,
 						> Dequeue current cust
 						> custInLine--
 						> numberServiced++
+						> totWaitTime += (currentTime - custTimeStamp)
 					> else
 						> cashiers timeLimit--
 				> currentTime++

@@ -1,34 +1,35 @@
 /*****************************************************************************/
-/* Program 5 - Decimal to Binary Converter									 */
-/*****************************************************************************
+// Project 1 - Service Simulator
+/******************************************************************************
     Author: Nathaniel Hoefer
     Student ID: X529U639
-    Program: #5
+    Project: #1
 
-
-Class Name:
-	<Description>
+Class Name: Customer
+	This class contains the information needed for each customer that is
+		processed
 
 Data:
-		- (<type>) <Name>: <Desc>
+		- (int) mCustNum: The order in which the customer enters
+		- (int) mTimeStamp: The minute that the customer enters the store
+		- (int) mServiceTime: The time taken for the cashier to service the
+			customer
 
 Constructors:
-		+ <Name>() - <Desc>
+		+ Customer(int timeStamp, int serviceTime)
 
 Accessor and Mutator Functions:
-		+ <Func>
-
-Functions:
-		+ <Name>(<Parms>) - <Desc>
-			Preconditions:
-			Postconditions:
-			Returns:
-			> <Steps>
+		+ int getCustNum()
+		+ int getTimeStamp()
+		+ int getServiceTime()
+		+ void setCustNum(int custNum)
+		+ void setTimeStamp(int timeStamp)
+		+ void setServiceTime(int serviceTime)
 
  */
 
-//#ifndef <NAME>_HPP_
-//#define <NAME>_HPP_
+#ifndef CUSTOMER_HPP_
+#define CUSTOMER_HPP_
 
 //#include "node.hpp"
 //#include <string>
@@ -48,43 +49,33 @@ private:
 
 // MEMBER VARIABLES ************************************************************
 
-	// <Desc>
-	// <VARS>
+	// The order in which the customer enters
+	int mCustNum;
 
+	// The minute that the customer enters the store
+	int mTimeStamp;
+
+	// The time taken for the cashier to service the customer
+	int mServiceTime;
 
 
 public:
 
 // CONSTRUCTORS ***************************************************************
 
-	// <Constructors>
+	Customer(int timeStamp, int serviceTime);
 
 
 // Accessors and Mutators
 
-	// <Funcs>
-
-
-// METHODS ********************************************************************
-
-//	<Desc>
-//		Preconditions:
-//		Postconditions:
-//		Returns:
-	// <Funcs>
-
-
-/*****************************************************************************/
-
-
-//	<Desc>
-//		Preconditions:
-//		Postconditions:
-//		Returns:
-	// <Funcs>
-
+	int getCustNum() { return mCustNum; };
+	int getTimeStamp() { return mTimeStamp; };
+	int getServiceTime() { return mServiceTime; };
+	void setCustNum(int custNum) { mCustNum = custNum; };
+	void setTimeStamp(int timeStamp) { mTimeStamp = timeStamp; };
+	void setServiceTime(int serviceTime) { mServiceTime = serviceTime; };
 
 };
 
 
-#endif /* <NAME>_HPP_ */
+#endif /* CUSTOMER_HPP_ */

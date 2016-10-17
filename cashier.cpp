@@ -7,7 +7,7 @@
 
 */
 
-#include "customer.hpp"
+#include "cashier.hpp"
 
 using namespace std;
 
@@ -21,12 +21,33 @@ using namespace std;
 // CONSTRUCTORS ***************************************************************
 
 
-Customer::Customer(int timeStamp, int serviceTime)
+Cashier::Cashier()
 {
-	mCustNum = 0;
-	mTimeStamp = timeStamp;
-	mServiceTime = serviceTime;
+	mCustInLine = 0;
+	mTimeLimit = 0;
+	mMaxInLine = 0;
+}
+
+Cashier::Cashier(int lineMax)
+{
+	mCustInLine = 0;
+	mTimeLimit = 0;
+	mMaxInLine = lineMax;
 }
 
 
+// METHODS ********************************************************************
+
+
+//	Determines if the line is full.
+//		Preconditions: None
+//		Postconditions: None
+//		Returns: True if maxInLine matches custInLine.
+bool Cashier::isFull()
+{
+	if (mCustInLine == mMaxInLine)
+		return true;
+	else
+		return false;
+}
 
