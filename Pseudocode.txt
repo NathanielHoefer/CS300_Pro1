@@ -1,0 +1,53 @@
+
+
+Node Class: Data = *Customer
+
+Customer: 
+	- number
+	- timestamp
+	- serviceTime
+	
+	
+Cashier:
+	- custInLine (int)
+	- timeLimit To service a customer
+	
+	
+ServiceSimulator:
+	- currentTime (int)
+	- numberServiced (int)
+	- totWaitTime (int)
+	- turnedAway (int)
+	- minInDay (int)
+	- numOfCashiers (int)
+	
+	Functions:
+		+ Simulate() Begins the simulation by creating cashiers and customers
+			> Create Cashiers (array)
+			> Populate queue of dailyCustomers
+			> Loop until customer list is empty
+				> if customer timestamp matches currentTime
+					> If all queues are full
+						> remove customer
+						> turnedAway++
+					> else
+						> Add cust to the cashier with the least cust's
+						> totWaitTime++
+				> For each cashier, service customer
+					> If timeLimit is reached,
+						> Dequeue current cust
+						> custInLine--
+						> numberServiced++
+					> else
+						> cashiers timeLimit--
+				> currentTime++
+		+ int AveWaitTime() Returns the average time customer waited
+		- int ArrivalTime(int minMin, int maxMin) The arrival time of the next customer
+		- int ServiceTime(int minMin, int maxMin) The time taken to service
+		- Queue* PopulateCustomers() Creates list of all customers to enter in a day
+			> Create queue to hold customers
+			> Loop until latest arrival time matches minInDay
+				> Generate arrival time with ArrivalTime()
+				> Generate service time with ServiceTime()
+				> Create customer node with arrival and service time
+	
