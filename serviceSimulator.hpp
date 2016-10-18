@@ -13,6 +13,8 @@ Data:
 	+ int numOfCashiers; The number of cashiers to be stationed
 	+ int lineMax; The maximum number of customers per lane
 	+ int minInDay; The total minutes in a single day
+	+ bool readInput; True to read customers from file or false to generate
+		daily customers
 	+ int ArrTmMin; The minimum arrival time
 	+ int ArrTmMax; The maximum arrival time
 	+ int SerTmMin; The minimum service time
@@ -57,6 +59,8 @@ Functions:
 		Postconditions: None
 		> Create Cashiers (array)
 		> Populate queue of dailyCustomers
+			> If readFrom file, load customers from file
+			> else generate customers and save file
 		> Loop until customer list is empty
 			> if customer timestamp matches currentTime
 				> If all queues are full
@@ -90,6 +94,19 @@ Functions:
 		Preconditions: None
 		Postconditions: None
 		Returns: mTotWaitTime / mNumServiced
+
+	+ void OutputResults() - Prints out the results of the simulation and
+		creates an output file
+		Preconditions: Simulation has already been conducted.
+		Postconditions: File Output.txt is created and output printed to console
+		> Gather all of the info to be output
+		> Create an iostream to a file and to the console.
+		> Label and date the stream.
+		> Output the number of customers serviced
+		> Output the total number of customers turned away
+		> Output the average wait time
+		> Output the total wait time
+		> Close streams
 
 	- int TimeGenerator(int minTime, int maxTime) - Generates a random time
 		between the min and max time entered.
@@ -126,6 +143,9 @@ struct ServiceParms
 
 	// The total minutes in a single day
 	int minInDay;
+
+	// True to read customers from file or false to generate daily customers
+	bool readInput;
 
 	// The minimum and maximum arrival time
 	int ArrTmMin;
@@ -199,6 +219,9 @@ public:
 
 	// Calculates the average time the customers waited before being serviced.
 	float AveWaitTime();
+
+	// Prints out the results of the simulation and creates an output file.
+	void OutputResults();
 
 
 private:

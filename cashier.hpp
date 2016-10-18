@@ -27,6 +27,7 @@ Accessor and Mutator Functions:
 	+ int getMaxInLine();
 	+ void setCustInLine(int cust);
 	+ void reduceCustInLine();
+	+ void increaseCustInLine()
 	+ void setTimeLimit(int timeLimit);
 	+ void reduceTimeLimit();
 	+ void setMaxInLine(int lineMax);
@@ -86,6 +87,7 @@ public:
 	int getMaxInLine() { return mMaxInLine; };
 	void setCustInLine(int cust) { mCustInLine = cust; };
 	void reduceCustInLine() { mCustInLine--; };
+	void increaseCustInLine() { mCustInLine++; };
 	void setTimeLimit(int timeLimit) { mTimeLimit = timeLimit; };
 	void reduceTimeLimit() { mTimeLimit--; };
 	void setMaxInLine(int lineMax) { mMaxInLine = lineMax; };

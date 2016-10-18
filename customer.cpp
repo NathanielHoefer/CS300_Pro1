@@ -19,6 +19,14 @@ using namespace std;
 // CONSTRUCTORS ***************************************************************
 
 
+Customer::Customer()
+{
+	mCustNum = 0;
+	mTimeStamp = 0;
+	mServiceTime = 0;
+}
+
+
 Customer::Customer(int timeStamp, int serviceTime)
 {
 	mCustNum = 0;

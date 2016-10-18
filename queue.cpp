@@ -40,8 +40,15 @@ void Queue::Enqueue(Customer* ptr)
 {
 	Node* newNode = new Node(ptr);
 
-	newNode->setNextPointer(mFront);
-	mFront = newNode;
+	if (isEmpty())
+	{
+		mFront = mRear = newNode;
+	}
+	else
+	{
+		mRear->setNextPointer(newNode);
+		mRear = newNode;
+	}
 
 	mCount++;
 }
@@ -61,6 +68,7 @@ void Queue::Dequeue()
 		Node* ptr = mFront;
 
 		mFront = ptr->getNextPointer();
+		delete ptr->getCust();
 		delete ptr;
 	}
 }

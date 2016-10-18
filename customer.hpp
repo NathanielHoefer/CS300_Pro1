@@ -63,6 +63,7 @@ public:
 
 // CONSTRUCTORS ***************************************************************
 
+	Customer();
 	Customer(int timeStamp, int serviceTime);
 
 

@@ -11,6 +11,9 @@
 #include "queue.hpp"
 #include "cashier.hpp"
 #include <stdlib.h>
+#include <fstream>
+#include <iostream>
+#include <sstream>
 
 using namespace std;
 
@@ -40,16 +43,102 @@ ServiceSimulator::ServiceSimulator(ServiceParms parms)
 //		Postconditions: None
 void ServiceSimulator::simulate()
 {
+
+	// To account for 0 index
+	int numOfCashiers = mParms.numOfCashiers - 1;
+
 	// Creates a number of cashiers equal to the entered parameter
 	Cashier* cashiers[mParms.numOfCashiers];
 	for ( int i = 0; i < mParms.numOfCashiers; i++)
+	{
+		cashiers[i] = new Cashier;
 		cashiers[i]->setMaxInLine(mParms.lineMax);
+	}
 
 	// Creates the lanes as queues for each customer
 	Queue* lane[mParms.numOfCashiers];
+	for ( int i = 0; i < mParms.numOfCashiers; i++ )
+		lane[i] = new Queue;
 
-	// Generates a queue of customers to enter store
-	Queue* dailyCustomers = PopulateCustomers();
+	Queue* dailyCustomers;
+
+	// Determines whether to read from file or generate file
+	if ( mParms.readInput )
+	{
+		string fileName = "customers.txt";
+
+		ifstream readFile(fileName.c_str());
+		string fileLine;
+
+		if (readFile.is_open())
+		{
+			// Reads each line and uses parse function to store data
+			// ParseLine will return 0 if an there is an issue with opening
+			// the file.
+			while ( getline(readFile, fileLine) )
+			{
+
+				// First value of substring
+				int sub1 = 0;
+
+				// Second value of substring
+				int sub2 = fileLine.find(' ');
+
+				string custNum;
+				string timeStamp;
+				string serviceTime;
+				int timeStampVal;
+				int serviceTimeVal;
+
+				// Tries to parse the information into the correct fields
+				// Exception is thrown if error occurs.
+				try
+				{
+					// customer number
+					custNum = fileLine.substr(sub1, (sub2-sub1));
+
+					// Removes the customer number from the line
+					sub1 = custNum.length() + 1;
+					sub2 = fileLine.length();
+					fileLine = fileLine.substr(sub1, (sub2 - sub1));
+
+					// Parses the time stamp
+					sub1 = 0;
+					sub2 = fileLine.find(' ');
+					timeStamp = fileLine.substr(sub1, (sub2-sub1));
+
+					// Parses the service time
+					sub1 = timeStamp.length() + 1;
+					sub2 = fileLine.length();
+					serviceTime = fileLine.substr(sub1, (sub2 - sub1));
+
+					// Converts time stamp and service time to integers
+					stringstream convert1;
+					convert1 << timeStamp;
+					convert1 >> timeStampVal;
+					stringstream convert2;
+					convert2 << serviceTime;
+					convert2 >> serviceTimeVal;
+
+					// Creates temp customer and adds it to the queue
+					Customer* ptr = new Customer(timeStampVal, serviceTimeVal);
+					dailyCustomers->Enqueue(ptr);
+
+				}
+				catch (int i)
+				{
+					cout << "ERROR: Unable to open file" << endl;
+				}
+			}
+		}
+		readFile.close();
+	}
+	else
+	{
+		// Generates a queue of customers to enter store
+		dailyCustomers = PopulateCustomers();
+	}
+
 
 	// Next customer to enter store
 	Customer* currentCust = dailyCustomers->GetFront();
@@ -93,9 +182,23 @@ void ServiceSimulator::simulate()
 			}
 			else
 			{
+
 				lane[shortestLine]->Enqueue( dailyCustomers->GetFront() );
+
+				// If only 1 customer is in the line, then update the cashier's
+				// wait time.
+				if ( cashiers[shortestLine]->getCustInLine() == 1 )
+				{
+					int currentSerTime = lane[shortestLine]->
+											GetFront()->getServiceTime();
+					cashiers[shortestLine]->setTimeLimit(currentSerTime);
+				}
+				cashiers[shortestLine]->increaseCustInLine();
+
 			}
 
+			cout << "Customer: " << dailyCustomers->GetFront()->getCustNum() <<
+					" entered the store" << endl;
 			dailyCustomers->Dequeue();
 			currentCust = dailyCustomers->GetFront();
 			allLinesFull = true;
@@ -115,25 +218,51 @@ void ServiceSimulator::simulate()
 				if ( cashiers[i]->getTimeLimit() == 0 )
 				{
 					mTotWaitTime += (mCurrentTime - frontCust->getTimeStamp());
+
+					cout << "Customer: " << dailyCustomers->GetFront()->getCustNum() <<
+										" was processed in lane: " <<
+										i << " at " << mCurrentTime << endl;
 					lane[i]->Dequeue();
 
 					// Subtracts 1 from number of customers in line and updates
-					// the new service time for next customer
+					// the new service time for next customer if one in line
 					cashiers[i]->reduceCustInLine();
-					cashiers[i]->setTimeLimit(
-							lane[i]->GetFront()->getServiceTime() );
+
+					if ( cashiers[i]->getCustInLine() != 0 )
+					{
+						cashiers[i]->setTimeLimit(
+									lane[i]->GetFront()->getServiceTime() );
+					}
+
 					mNumberServiced++;
 				}
 				else
 				{
-					// Subtracts 1 from time to service customer
-					cashiers[i]->reduceTimeLimit();
+					// Subtracts 1 from time to service customer if customers
+					// in line
+					if ( cashiers[i]->getCustInLine() != 0 )
+					{
+						cashiers[i]->reduceTimeLimit();
+					}
+
+
 				}
 			}
 		}
 
 		incrementTime();
 	}
+
+
+	// Cleaning memory
+	for ( int i = 0; i < mParms.numOfCashiers; i++ )
+		delete lane[i];
+
+	for ( int i = 0; i < mParms.numOfCashiers; i++ )
+			delete cashiers[i];
+
+
+	OutputResults();
 }
 
 
@@ -149,7 +278,6 @@ Queue* ServiceSimulator::PopulateCustomers()
 {
 	Queue* dailyCustomers = new Queue();
 
-	Customer* ptr = Customer;
 	int custNum = 1;
 
 	// Randomly generates a time of arrival and time taken to service for each
@@ -157,8 +285,15 @@ Queue* ServiceSimulator::PopulateCustomers()
 	int timeStamp = TimeGenerator(mParms.ArrTmMin, mParms.ArrTmMax);
 	int serviceTime = TimeGenerator(mParms.SerTmMin, mParms.SerTmMax);
 
+
+	// Opens Text file and saves each part until inventory is complete.
+	string fileName = "customers.txt";
+	ofstream saveFile(fileName.c_str());
+
 	// While the end of the day hasn't been reached
 	do {
+		Customer* ptr = new Customer;
+
 		// Update the current customer's info
 		ptr->setCustNum(custNum);
 		ptr->setTimeStamp(timeStamp);
@@ -167,6 +302,20 @@ Queue* ServiceSimulator::PopulateCustomers()
 		// Put the customer into the queue
 		dailyCustomers->Enqueue(ptr);
 
+
+		// Generates a customers file with each customer's number, time stamp
+		// and service time.
+		if ( !mParms.readInput )
+		{
+
+			if (saveFile.is_open())
+			{
+				saveFile << custNum << " " <<
+							timeStamp << " " <<
+							serviceTime << endl;
+			}
+		}
+
 		// Generate new values for the arrival and service time
 		timeStamp += TimeGenerator(mParms.ArrTmMin, mParms.ArrTmMax);
 		serviceTime = TimeGenerator(mParms.SerTmMin, mParms.SerTmMax);
@@ -174,8 +323,50 @@ Queue* ServiceSimulator::PopulateCustomers()
 
 	} while ( timeStamp <= mParms.minInDay);
 
-	return dailyCustomers;
+	saveFile.close();
 
+	cout << "File Generated" << endl;
+
+	return dailyCustomers;
+}
+
+
+/*****************************************************************************/
+
+
+//	Prints out the results of the simulation and creates an output file
+//		Preconditions: Simulation has already been conducted.
+//		Postconditions: File Output.txt is created and output printed to console
+void ServiceSimulator::OutputResults()
+{
+	string title = "Simulation results";
+	string custServiced = "Total number of customers serviced: ";
+	string custTurnedAway = "Total number of customers turned away: ";
+	string aveWaitTime = "Average wait time: ";
+	string totWaitTime = "Total wait time: ";
+
+	string fileName = "Output.txt";
+
+	// Opens Text file and saves each part until inventory is complete.
+	ofstream saveFile(fileName.c_str());
+
+	if (saveFile.is_open())
+	{
+		saveFile << title << endl << endl;
+		saveFile << custServiced << mNumberServiced << endl;
+		saveFile << custTurnedAway << mTurnedAway << endl;
+		saveFile << aveWaitTime << AveWaitTime() << endl;
+		saveFile << totWaitTime << mTotWaitTime << endl;
+	}
+	saveFile.close();
+
+	cout << title << endl << endl;
+	cout << custServiced << mNumberServiced << endl;
+	cout << custTurnedAway << mTurnedAway << endl;
+	cout << aveWaitTime << AveWaitTime() << endl;
+	cout << totWaitTime << mTotWaitTime << endl << endl;
+
+	cout << "\nFile Saved" << endl;
 }
 
 
@@ -202,7 +393,7 @@ float ServiceSimulator::AveWaitTime()
 //		Returns: minTime <= time <= maxTime
 int ServiceSimulator::TimeGenerator(int minTime, int maxTime)
 {
-	int range = maxTime - minTime;
+	int range = maxTime - minTime + 1;
 
 	return rand() % range + minTime;
 }
