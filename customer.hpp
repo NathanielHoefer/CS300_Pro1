@@ -10,21 +10,21 @@ Class Name: Customer
 		processed
 
 Data:
-		- (int) mCustNum: The order in which the customer enters
-		- (int) mTimeStamp: The minute that the customer enters the store
-		- (int) mServiceTime: The time taken for the cashier to service the
-			customer
+	- (int) mCustNum: The order in which the customer enters
+	- (int) mTimeStamp: The minute that the customer enters the store
+	- (int) mServiceTime: The time taken for the cashier to service the
+		customer
 
 Constructors:
-		+ Customer(int timeStamp, int serviceTime)
+	+ Customer(int timeStamp, int serviceTime)
 
 Accessor and Mutator Functions:
-		+ int getCustNum()
-		+ int getTimeStamp()
-		+ int getServiceTime()
-		+ void setCustNum(int custNum)
-		+ void setTimeStamp(int timeStamp)
-		+ void setServiceTime(int serviceTime)
+	+ int getCustNum()
+	+ int getTimeStamp()
+	+ int getServiceTime()
+	+ void setCustNum(int custNum)
+	+ void setTimeStamp(int timeStamp)
+	+ void setServiceTime(int serviceTime)
 
  */
 

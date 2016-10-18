@@ -11,21 +11,21 @@ Class Name: Node
 	pointer of a customer
 
 Data:
-		- (Customer*) mCustomer: Pointer of a customer
-		- (Node) *mNextNode: Pointer to next node in list
+	- (Customer*) mCustomer: Pointer of a customer
+	- (Node) *mNextNode: Pointer to next node in list
 
 Constructors:
-		+ Node() - Sets the value to default
-		+ Node(Customer* cust): creates node with the arguments passed
-		+ Node(Customer* cust, Node* nextNode): creates node with the arguments passed
+	+ Node() - Sets the value to default
+	+ Node(Customer* cust): creates node with the arguments passed
+	+ Node(Customer* cust, Node* nextNode): creates node with the arguments passed
 
 Mutator Functions:
-		+ setNextPointer
-		+ setCust
+	+ setNextPointer
+	+ setCust
 
 Accessor Functions:
-		+ getNextPointer
-		+ getCust
+	+ getNextPointer
+	+ getCust
 
 */
 

@@ -10,10 +10,9 @@
 #include "node.hpp"
 #include "customer.hpp"
 #include "queue.hpp"
+#include <string>
 
 using namespace std;
-
-
 
 /*****************************************************************************/
 // Class Source Functions
@@ -23,7 +22,7 @@ using namespace std;
 // CONSTRUCTORS ***************************************************************
 
 
-void Queue::Queue()
+Queue::Queue()
 {
 	mFront = NULL;
 	mRear = NULL;

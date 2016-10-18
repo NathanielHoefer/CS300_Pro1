@@ -8,32 +8,34 @@
 
 Class Name: Cashier
 	This class contains the information for the cashiers used to process the
-		customers as they are in the front of the line
+		customers as they are in the front of the line.
 
 Data:
-		- int mCustInLine; the number of customers currently in the line
-			including the customer being processed.
-		- int mTimeLimit; The number of minutes until the customer in the front
-			of the line has been processed
-		- int mMaxInLine; the max number of customers in line
+	- int mCustInLine; the number of customers currently in the line including
+		the customer being processed.
+	- int mTimeLimit; The number of minutes until the customer in the front of
+		the line has been processed
+	- int mMaxInLine; the max number of customers in line
 
 Constructors:
-		+ Cashier()
-		+ Cashier(int lineMax)
+	+ Cashier()
+	+ Cashier(int lineMax)
 
 Accessor and Mutator Functions:
-		+ int getCustInLine();
-		+ int getTimeLimit();
-		+ int getMaxInLine();
-		+ void setCustInLine(int cust);
-		+ void setTimeLimit(int timeLimit);
-		+ void setMaxInLine(int lineMax);
+	+ int getCustInLine();
+	+ int getTimeLimit();
+	+ int getMaxInLine();
+	+ void setCustInLine(int cust);
+	+ void reduceCustInLine();
+	+ void setTimeLimit(int timeLimit);
+	+ void reduceTimeLimit();
+	+ void setMaxInLine(int lineMax);
 
 Functions:
-		+ bool isFull() - Determines if the line is full.
-			Preconditions: None
-			Postconditions: None
-			Returns: True if maxInLine matches custInLine.
+	+ bool isFull() - Determines if the line is full.
+		Preconditions: None
+		Postconditions: None
+		Returns: True if maxInLine matches custInLine.
 
  */
 
@@ -83,12 +85,15 @@ public:
 	int getTimeLimit() { return mTimeLimit; };
 	int getMaxInLine() { return mMaxInLine; };
 	void setCustInLine(int cust) { mCustInLine = cust; };
+	void reduceCustInLine() { mCustInLine--; };
 	void setTimeLimit(int timeLimit) { mTimeLimit = timeLimit; };
+	void reduceTimeLimit() { mTimeLimit--; };
 	void setMaxInLine(int lineMax) { mMaxInLine = lineMax; };
 
 
 // METHODS ********************************************************************
 
+	// Determines if the line is full.
 	bool isFull();
 
 };

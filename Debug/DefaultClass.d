@@ -1,1 +1,0 @@
-DefaultClass.o: ../DefaultClass.cpp

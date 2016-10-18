@@ -4,25 +4,28 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 CPP_SRCS += \
-../DefaultClass.cpp \
-../DefaultMain.cpp \
+../cashier.cpp \
 ../customer.cpp \
+../main.cpp \
 ../node.cpp \
-../queue.cpp 
+../queue.cpp \
+../serviceSimulator.cpp 
 
 OBJS += \
-./DefaultClass.o \
-./DefaultMain.o \
+./cashier.o \
 ./customer.o \
+./main.o \
 ./node.o \
-./queue.o 
+./queue.o \
+./serviceSimulator.o 
 
 CPP_DEPS += \
-./DefaultClass.d \
-./DefaultMain.d \
+./cashier.d \
 ./customer.d \
+./main.d \
 ./node.d \
-./queue.d 
+./queue.d \
+./serviceSimulator.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes

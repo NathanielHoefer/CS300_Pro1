@@ -42,12 +42,12 @@ ServiceSimulator:
 						> cashiers timeLimit--
 				> currentTime++
 		+ int AveWaitTime() Returns the average time customer waited
-		- int ArrivalTime(int minMin, int maxMin) The arrival time of the next customer
-		- int ServiceTime(int minMin, int maxMin) The time taken to service
-		- Queue* PopulateCustomers() Creates list of all customers to enter in a day
+		+ Queue* PopulateCustomers() Creates list of all customers to enter in a day
 			> Create queue to hold customers
 			> Loop until latest arrival time matches minInDay
 				> Generate arrival time with ArrivalTime()
 				> Generate service time with ServiceTime()
 				> Create customer node with arrival and service time
+		- int ArrivalTime(int minMin, int maxMin) The arrival time of the next customer
+		- int ServiceTime(int minMin, int maxMin) The time taken to service
 	
