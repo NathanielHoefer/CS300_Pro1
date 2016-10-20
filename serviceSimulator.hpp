@@ -123,6 +123,7 @@ Functions:
 #define SERVICESIMULATOR_HPP_
 
 #include "queue.hpp"
+#include "cashier.hpp"
 #include <string>
 
 using namespace std;
@@ -230,7 +231,14 @@ private:
 	int TimeGenerator(int minTime, int maxTime);
 
 	// Increments the current time by 1
-	void incrementTime() { mCurrentTime++; };
+	void incrementTime() {
+		mCurrentTime++;
+	}
+	void readInputCust(Queue& dailyCustomers);
+
+	void processCustomer(Queue lane[], Cashier cashiers[]);
+
+	;
 
 };
 
