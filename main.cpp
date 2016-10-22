@@ -38,7 +38,7 @@ int main()
 	ServiceParms parameters;
 
 	// The number of cashiers to be stationed
-	parameters.numOfCashiers = 3;
+	parameters.numOfCashiers = 2;
 
 	// The maximum number of customers per lane
 	parameters.lineMax = 6;
@@ -47,17 +47,17 @@ int main()
 	parameters.minInDay = 570;
 
 	// True to read customers from file or false to generate daily customers
-	parameters.readInput = true;
+	parameters.readInput = false;
 
 	// The minimum and maximum arrival time
-	parameters.ArrTmMin = 1;
-	parameters.ArrTmMax = 15;
+	parameters.arrTmMin = 1;
+	parameters.arrTmMax = 3;
 
 	// The minimum and maximum service time
-	parameters.SerTmMin = 1;
-	parameters.SerTmMax = 20;
+	parameters.serTmMin = 1;
+	parameters.serTmMax = 10;
 
-	cout << "Parameters complete" << endl;
+	parameters.displayLogs = false;
 
 	ServiceSimulator sim(parameters);
 

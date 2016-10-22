@@ -71,7 +71,7 @@ void ServiceSimulator::simulate()
 
 	// Loop until day is completed + the max service time to account for any
 	// late customers still in line
-	while ( mCurrentTime < mParms.minInDay + (mParms.SerTmMax * mParms.lineMax))
+	while ( mCurrentTime < mParms.minInDay + (mParms.serTmMax * mParms.lineMax))
 	{
 
 		logMsg("Time of day", mCurrentTime);
@@ -127,21 +127,6 @@ void ServiceSimulator::simulate()
 						lane[shortestLine].GetRear().getCustNum(),
 						lane[shortestLine].getCount());
 
-
-//				// If only 1 customer is in the line, then update the cashier's
-//				// wait time.
-//				if ( cashiers[shortestLine].getCustInLine() == 1 &&
-//						cashiers[shortestLine].getTimeLimit() == 0)
-//				{
-//					int currentSerTime = lane[shortestLine].
-//											GetFront().getServiceTime();
-//					cashiers[shortestLine].setTimeLimit(currentSerTime);
-//
-//					// Remove customer from line to be processed.
-//					lane[shortestLine].Dequeue();
-//					cashiers[shortestLine].reduceCustInLine();
-//				}
-
 			}
 
 			dailyCustomers.Dequeue();
@@ -184,10 +169,8 @@ Queue ServiceSimulator::PopulateCustomers()
 
 	// Randomly generates a time of arrival and time taken to service for each
 	// customer
-	int timeStamp = TimeGenerator(mParms.ArrTmMin,
-									mParms.ArrTmMax, custNum + 1);
-	int serviceTime = TimeGenerator(mParms.SerTmMin,
-									mParms.SerTmMax, custNum + 1);
+	int timeStamp = TimeGenerator(mParms.arrTmMin, mParms.arrTmMax);
+	int serviceTime = TimeGenerator(mParms.serTmMin, mParms.serTmMax);
 
 
 	// Opens Text file and saves each part until inventory is complete.
@@ -217,10 +200,8 @@ Queue ServiceSimulator::PopulateCustomers()
 		}
 
 		// Generate new values for the arrival and service time
-		timeStamp += TimeGenerator(mParms.ArrTmMin,
-									mParms.ArrTmMax, custNum + 1);
-		serviceTime = TimeGenerator(mParms.SerTmMin,
-									mParms.SerTmMax, custNum + 1);
+		timeStamp += TimeGenerator(mParms.arrTmMin, mParms.arrTmMax);
+		serviceTime = TimeGenerator(mParms.serTmMin, mParms.serTmMax);
 
 		custNum++;
 
@@ -228,8 +209,6 @@ Queue ServiceSimulator::PopulateCustomers()
 	} while ( timeStamp <= mParms.minInDay);
 
 	saveFile.close();
-
-	cout << "File Generated" << endl;
 
 	return dailyCustomers;
 }
@@ -268,7 +247,7 @@ void ServiceSimulator::OutputResults()
 	cout << custServiced << mNumberServiced << endl;
 	cout << custTurnedAway << mTurnedAway << endl;
 	cout << aveWaitTime << AveWaitTime() << endl;
-	cout << totWaitTime << mTotWaitTime << endl << endl;
+	cout << totWaitTime << mTotWaitTime << endl;
 
 	cout << "\nFile Saved" << endl;
 }
@@ -295,14 +274,9 @@ float ServiceSimulator::AveWaitTime()
 //		Preconditions: None
 //		Postconditions: None
 //		Returns: minTime <= time <= maxTime
-int ServiceSimulator::TimeGenerator(int minTime, int maxTime, int seed)
+int ServiceSimulator::TimeGenerator(int minTime, int maxTime)
 {
 	int range = maxTime - minTime + 1;
-	int randSeed = (61 * seed + 46) % 647;
-	randSeed = (time(0) * randSeed) + randSeed;
-	cout << randSeed << endl;
-
-
 
 	return rand() % range + minTime;
 }
@@ -467,9 +441,13 @@ void ServiceSimulator::processCustomer(Queue lane[], Cashier cashiers[])
 
 void ServiceSimulator::logMsg(string output, int period, int custNum, int info)
 {
-	if (period != 0 && custNum != 0)
-		cout << "NOTE: Time " << period << ": Customer " << custNum << ": " <<
-			output << " - " << info << endl;
-	else
-		cout << "NOTE: Time " << period << endl;
+	if ( mParms.displayLogs )
+	{
+		if (period != 0 && custNum != 0)
+			cout << "NOTE: Time " << period << ": Customer " << custNum << ": " <<
+				output << " - " << info << endl;
+		else
+			cout << "NOTE: Time " << period << endl;
+	}
+
 }

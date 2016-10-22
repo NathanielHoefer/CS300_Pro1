@@ -149,14 +149,18 @@ struct ServiceParms
 	bool readInput;
 
 	// The minimum and maximum arrival time
-	int ArrTmMin;
-	int ArrTmMax;
+	int arrTmMin;
+	int arrTmMax;
 
 	// The minimum and maximum service time
-	int SerTmMin;
-	int SerTmMax;
+	int serTmMin;
+	int serTmMax;
+
+	// Display the logs
+	bool displayLogs;
 
 };
+
 
 
 /*****************************************************************************/
@@ -230,7 +234,7 @@ public:
 private:
 
 	// Generates a random time between the min and max time entered.
-	int TimeGenerator(int minTime, int maxTime, int seed);
+	int TimeGenerator(int minTime, int maxTime);
 
 	// Increments the current time by 1
 	void incrementTime() {
