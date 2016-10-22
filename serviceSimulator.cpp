@@ -55,25 +55,32 @@ void ServiceSimulator::simulate()
 
 	// Creates the lanes as queues for each customer
 	Queue lane[mParms.numOfCashiers];
+	Customer frontCustomers[mParms.numOfCashiers];
 
 
 	// Determines whether to read from file or generate file
 	Queue dailyCustomers;
-	readInputCust(dailyCustomers);
+	readInputCust(&dailyCustomers);
 
+	logMsg("Daily customers generated");
 
 	// Next customer to enter store
-	Customer* currentCust = dailyCustomers.GetFront();
+	Customer currentCust = dailyCustomers.GetFront();
 
 	bool allLinesFull = true;
 
-	// Loop until day is completed
-	while ( mCurrentTime < mParms.minInDay )
+	// Loop until day is completed + the max service time to account for any
+	// late customers still in line
+	while ( mCurrentTime < mParms.minInDay + mParms.SerTmMax)
 	{
 
+		logMsg("Time of day", mCurrentTime);
+
 		// Checks to see if it is the current time that the customer enters
-		if ( currentCust->getTimeStamp() == mCurrentTime )
+		if ( currentCust.getTimeStamp() == mCurrentTime )
 		{
+
+			logMsg("Entered store", mCurrentTime, dailyCustomers.GetFront().getCustNum(), 1);
 
 			// Sets line count to greatest amount or comparison
 			int shortestLineCount = mParms.lineMax;
@@ -100,6 +107,9 @@ void ServiceSimulator::simulate()
 			// shortest lane
 			if ( allLinesFull )
 			{
+				logMsg("Turned Away", mCurrentTime,
+						dailyCustomers.GetFront().getCustNum(), mTurnedAway + 1);
+
 				dailyCustomers.Dequeue();
 				mTurnedAway++;
 			}
@@ -109,33 +119,45 @@ void ServiceSimulator::simulate()
 				lane[shortestLine].Enqueue( dailyCustomers.GetFront() );
 				cashiers[shortestLine].increaseCustInLine();
 
-				cout << "Cust " << lane[shortestLine].GetFront()->getCustNum() <<
-						" entered lane " << shortestLine << " at time " << mCurrentTime << endl;
+
+				logMsg("Entered lane", mCurrentTime,
+						lane[shortestLine].GetRear().getCustNum(), shortestLine);
+
 
 				// If only 1 customer is in the line, then update the cashier's
 				// wait time.
-				if ( cashiers[shortestLine].getCustInLine() == 1 )
+				if ( cashiers[shortestLine].getCustInLine() == 1 &&
+						cashiers[shortestLine].getTimeLimit() == 0)
 				{
 					int currentSerTime = lane[shortestLine].
-											GetFront()->getServiceTime();
+											GetFront().getServiceTime();
 					cashiers[shortestLine].setTimeLimit(currentSerTime);
+
+					// Remove customer from line to be processed.
+					lane[shortestLine].Dequeue();
+					cashiers[shortestLine].reduceCustInLine();
 				}
 
 			}
 
-			cout << "Customer: " << dailyCustomers.GetFront()->getCustNum() <<
-					" entered the store" << endl;
-
-			currentCust = dailyCustomers.GetFront();
 			dailyCustomers.Dequeue();
+
+			// Only process if there are more customers for the day
+			if ( !dailyCustomers.isEmpty() )
+			{
+				currentCust = dailyCustomers.GetFront();
+			}
+
 			allLinesFull = true;
 		}
 
 		// Process the customers
-		processCustomer(lane, cashiers);
+		processCustomer(lane, cashiers, frontCustomers);
 
 		incrementTime();
 	}
+
+	logMsg("Processing Finished", mCurrentTime, -1);
 
 	OutputResults();
 }
@@ -149,9 +171,9 @@ void ServiceSimulator::simulate()
 //		Preconditions: The parameters are valid
 //		Postconditions: A queue of customers are generated
 //		Returns: The pointer of the queue of customers
-Queue* ServiceSimulator::PopulateCustomers()
+Queue ServiceSimulator::PopulateCustomers()
 {
-	Queue* dailyCustomers = new Queue();
+	Queue dailyCustomers;
 
 	int custNum = 1;
 
@@ -167,15 +189,11 @@ Queue* ServiceSimulator::PopulateCustomers()
 
 	// While the end of the day hasn't been reached
 	do {
-		Customer* ptr = new Customer;
 
-		// Update the current customer's info
-		ptr->setCustNum(custNum);
-		ptr->setTimeStamp(timeStamp);
-		ptr->setServiceTime(serviceTime);
+		Customer cust(custNum, timeStamp, serviceTime);
 
 		// Put the customer into the queue
-		dailyCustomers->Enqueue(ptr);
+		dailyCustomers.Enqueue(cust);
 
 
 		// Generates a customers file with each customer's number, time stamp
@@ -277,40 +295,51 @@ int ServiceSimulator::TimeGenerator(int minTime, int maxTime)
 
 
 
-void ServiceSimulator::readInputCust(Queue& dailyCustomers) {
+void ServiceSimulator::readInputCust(Queue* dailyCustomers) {
 	// Determines whether to read from file or generate file
-	if (mParms.readInput) {
+	if (mParms.readInput)
+	{
 		string fileName = "customers.txt";
 		ifstream readFile(fileName.c_str());
 		string fileLine;
-		if (readFile.is_open()) {
+
+		if (readFile.is_open())
+		{
 			// Reads each line and uses parse function to store data
 			// ParseLine will return 0 if an there is an issue with opening
 			// the file.
-			while (getline(readFile, fileLine)) {
+			while (getline(readFile, fileLine))
+			{
 				// First value of substring
 				int sub1 = 0;
+
 				// Second value of substring
 				int sub2 = fileLine.find(' ');
+
 				string custNum;
 				string timeStamp;
 				string serviceTime;
 				int timeStampVal;
 				int serviceTimeVal;
+
 				// customer number
 				custNum = fileLine.substr(sub1, (sub2 - sub1));
+
 				// Removes the customer number from the line
 				sub1 = custNum.length() + 1;
 				sub2 = fileLine.length();
 				fileLine = fileLine.substr(sub1, (sub2 - sub1));
+
 				// Parses the time stamp
 				sub1 = 0;
 				sub2 = fileLine.find(' ');
 				timeStamp = fileLine.substr(sub1, (sub2 - sub1));
+
 				// Parses the service time
 				sub1 = timeStamp.length() + 1;
 				sub2 = fileLine.length();
 				serviceTime = fileLine.substr(sub1, (sub2 - sub1));
+
 				// Converts time stamp and service time to integers
 				stringstream convert1;
 				convert1 << timeStamp;
@@ -318,42 +347,53 @@ void ServiceSimulator::readInputCust(Queue& dailyCustomers) {
 				stringstream convert2;
 				convert2 << serviceTime;
 				convert2 >> serviceTimeVal;
+
 				// Creates temp customer and adds it to the queue
 				Customer temp(timeStampVal, serviceTimeVal);
-				dailyCustomers.Enqueue(&temp);
+
+				dailyCustomers->Enqueue(temp);
 			}
 		}
 		readFile.close();
 	} else {
 		// Generates a queue of customers to enter store
-		dailyCustomers = *PopulateCustomers();
+		*dailyCustomers = PopulateCustomers();
 	}
 }
 
 
 
-void ServiceSimulator::processCustomer(Queue lane[], Cashier cashiers[]) {
-
-	Customer* frontCust;
-
+void ServiceSimulator::processCustomer(Queue lane[], Cashier cashiers[],
+										Queue frontCust[]) {
 
 	for (int i = 0; i < mParms.numOfCashiers; i++)
 	{
 
-		// Just verifies that the current lane is not empty
-		if (!lane[i].isEmpty())
+
+
+		// If time limit for current customer is 0, then move on to next
+		if ( cashiers[i].isAvailable() )
 		{
 
-			frontCust = lane[i].GetFront();
+			logMsg("Wait time", mCurrentTime,
+					lane[i].GetFront().getCustNum(),
+					mCurrentTime - lane[i].GetFront().getTimeStamp());
 
-			// If time limit for current customer is 0, then move on to next
-			if (cashiers[i].getTimeLimit() == 0)
+			mTotWaitTime += (mCurrentTime -
+								lane[i].GetFront().getTimeStamp());
+
+
+			logMsg("Processed in lane", mCurrentTime, lane[i].GetFront().getCustNum(), i);
+
+
+			// Just verifies that the current lane is not empty
+			if (!lane[i].isEmpty())
 			{
-				mTotWaitTime += (mCurrentTime - frontCust->getTimeStamp());
-
-				cout << "Cust " << lane[i].GetFront()->getCustNum()
-						<< " was processed in lane: " << i << " at time "
-						<< mCurrentTime << endl;
+				if (cashiers[i].getCustInLine() != 0)
+				{
+					cashiers[i].setTimeLimit(
+						lane[i].GetFront().getServiceTime());
+				}
 
 				lane[i].Dequeue();
 
@@ -361,21 +401,29 @@ void ServiceSimulator::processCustomer(Queue lane[], Cashier cashiers[]) {
 				// the new service time for next customer if one in line
 				cashiers[i].reduceCustInLine();
 
-				if (cashiers[i].getCustInLine() != 0)
-				{
-					cashiers[i].setTimeLimit(
-							lane[i].GetFront()->getServiceTime());
-				}
-				mNumberServiced++;
 			}
-			else
-			{
-				// Subtracts 1 from time to service customer if customers
-				// in line
-				if (cashiers[i].getCustInLine() != 0) {
-					cashiers[i].reduceTimeLimit();
-				}
+
+			mNumberServiced++;
+		}
+		else
+		{
+			// Subtracts 1 from time to service customer if customers
+			// in line
+			if (cashiers[i].getCustInLine() != 0) {
+				cashiers[i].reduceTimeLimit();
 			}
 		}
 	}
+}
+
+
+
+
+void ServiceSimulator::logMsg(string output, int period, int custNum, int info)
+{
+	if (period != 0 && custNum != 0)
+		cout << "NOTE: Time " << period << ": Customer " << custNum << ": " <<
+			output << " - " << info << endl;
+	else
+		cout << "NOTE: Time " << period << endl;
 }

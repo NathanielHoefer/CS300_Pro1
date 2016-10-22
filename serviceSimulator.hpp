@@ -216,13 +216,15 @@ public:
 
 	// Generates a list of all customers to enter in a single day using the
 	// parameters provided.
-	Queue* PopulateCustomers();
+	Queue PopulateCustomers();
 
 	// Calculates the average time the customers waited before being serviced.
 	float AveWaitTime();
 
 	// Prints out the results of the simulation and creates an output file.
 	void OutputResults();
+
+	void logMsg(string output, int period = 00, int custNum = 00, int info = 00);
 
 
 private:
@@ -234,9 +236,10 @@ private:
 	void incrementTime() {
 		mCurrentTime++;
 	}
-	void readInputCust(Queue& dailyCustomers);
+	void readInputCust(Queue* dailyCustomers);
 
-	void processCustomer(Queue lane[], Cashier cashiers[]);
+	void processCustomer(Queue lane[], Cashier cashiers[],
+							Queue frontCust[]);
 
 	;
 

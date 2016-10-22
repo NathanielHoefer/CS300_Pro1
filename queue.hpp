@@ -116,16 +116,16 @@ public:
 // Member Functions
 
 	// Adds new node to queue with entered customer
-	void Enqueue(Customer* ptr);
+	void Enqueue(Customer cust);
 
 	// Removes the first customer node in list
 	void Dequeue();
 
 	// Returns the customer pointer first in the queue
-	Customer* GetFront();
+	Customer GetFront();
 
 	// Returns the customer pointer last in the queue
-	Customer* GetRear();
+	Customer GetRear();
 
 	// Determines if queue is empty or not
 	bool isEmpty();

@@ -36,9 +36,9 @@ Queue::Queue()
 //	Adds new node to queue with entered
 //		Preconditions: None
 //		Postconditions: New node is at the end of the list
-void Queue::Enqueue(Customer* ptr)
+void Queue::Enqueue(Customer cust)
 {
-	Node* newNode = new Node(ptr);
+	Node* newNode = new Node(cust);
 
 	if (isEmpty())
 	{
@@ -68,7 +68,6 @@ void Queue::Dequeue()
 		Node* ptr = mFront;
 
 		mFront = ptr->getNextPointer();
-		delete ptr->getCust();
 		delete ptr;
 	}
 }
@@ -81,7 +80,7 @@ void Queue::Dequeue()
 //		Preconditions: Queue not empty
 //		Postconditions: Node
 //		Returns: Customer*
-Customer* Queue::GetFront()
+Customer Queue::GetFront()
 {
 	return mFront->getCust();
 }
@@ -94,7 +93,7 @@ Customer* Queue::GetFront()
 //		Precoditions: Queue not empty
 //		Postconditions: None
 //		Returns: Customer*
-Customer* Queue::GetRear()
+Customer Queue::GetRear()
 {
 	return mRear->getCust();
 }

@@ -34,5 +34,11 @@ Customer::Customer(int timeStamp, int serviceTime)
 	mServiceTime = serviceTime;
 }
 
+Customer::Customer(int custNum, int timeStamp, int serviceTime)
+{
+	mCustNum = custNum;
+	mTimeStamp = timeStamp;
+	mServiceTime = serviceTime;
+}
 
 

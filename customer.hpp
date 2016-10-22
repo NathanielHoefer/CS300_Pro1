@@ -58,6 +58,9 @@ private:
 	// The time taken for the cashier to service the customer
 	int mServiceTime;
 
+	// The time waiting in line to be processed.
+	int mWaitTime;
+
 
 public:
 
@@ -65,6 +68,7 @@ public:
 
 	Customer();
 	Customer(int timeStamp, int serviceTime);
+	Customer(int custNum, int timeStamp, int serviceTime);
 
 
 // Accessors and Mutators

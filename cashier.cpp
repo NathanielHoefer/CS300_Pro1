@@ -24,6 +24,7 @@ Cashier::Cashier()
 	mCustInLine = 0;
 	mTimeLimit = 0;
 	mMaxInLine = 0;
+	mIsAvailable = true;
 }
 
 Cashier::Cashier(int lineMax)
@@ -31,6 +32,8 @@ Cashier::Cashier(int lineMax)
 	mCustInLine = 0;
 	mTimeLimit = 0;
 	mMaxInLine = lineMax;
+	mIsAvailable = true;
+
 }
 
 

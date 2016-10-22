@@ -43,7 +43,7 @@ class Node
 // Member Variables
 
 	// Pointer of a customer
-	Customer* mCustomer;
+	Customer mCustomer;
 
 	// Pointer to next node in stack
 	Node *mNextNode;
@@ -53,15 +53,15 @@ class Node
 
 // Constructors
 	Node();
-	Node(Customer* cust);
-	Node(Customer* cust, Node* nextNode);
+	Node(Customer cust);
+	Node(Customer cust, Node* nextNode);
 
 
 // Mutator and Accessor Functions
 	void setNextPointer(Node *prt) { mNextNode = prt; };
-	void setCust(Customer* cust) { mCustomer = cust; };
+	void setCust(Customer cust) { mCustomer = cust; };
 	Node * getNextPointer() { return mNextNode; };
-	Customer * getCust() { return mCustomer; };
+	Customer getCust() { return mCustomer; };
 
 };
 

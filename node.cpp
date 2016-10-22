@@ -22,18 +22,18 @@ using namespace std;
 
 Node::Node()
 {
-	mCustomer = NULL;
+	mCustomer = Customer();
 	mNextNode = NULL;
 }
 
 
-Node::Node(Customer* cust)
+Node::Node(Customer cust)
 {
 	mCustomer = cust;
 	mNextNode = NULL;
 }
 
-Node::Node(Customer* cust, Node* nextNode)
+Node::Node(Customer cust, Node* nextNode)
 {
 	mCustomer = cust;
 	mNextNode = nextNode;

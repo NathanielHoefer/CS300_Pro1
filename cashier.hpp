@@ -70,6 +70,9 @@ private:
 	// The max number of customers in line
 	int mMaxInLine;
 
+	// True if the cashier isn't working with any customers
+	bool mIsAvailable;
+
 
 
 public:
@@ -91,12 +94,15 @@ public:
 	void setTimeLimit(int timeLimit) { mTimeLimit = timeLimit; };
 	void reduceTimeLimit() { mTimeLimit--; };
 	void setMaxInLine(int lineMax) { mMaxInLine = lineMax; };
+	void setAvailability(bool isAvail) { mIsAvailable = isAvail; };
 
 
 // METHODS ********************************************************************
 
 	// Determines if the line is full.
 	bool isFull();
+
+	bool isAvailable();
 
 };
 
