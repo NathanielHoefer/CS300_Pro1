@@ -238,10 +238,8 @@ private:
 	}
 	void readInputCust(Queue* dailyCustomers);
 
-	void processCustomer(Queue lane[], Cashier cashiers[],
-							Queue frontCust[]);
+	void processCustomer(Queue lane[], Cashier cashiers[]);
 
-	;
 
 };
 

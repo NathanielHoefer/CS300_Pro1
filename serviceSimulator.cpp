@@ -55,7 +55,6 @@ void ServiceSimulator::simulate()
 
 	// Creates the lanes as queues for each customer
 	Queue lane[mParms.numOfCashiers];
-	Customer frontCustomers[mParms.numOfCashiers];
 
 
 	// Determines whether to read from file or generate file
@@ -123,20 +122,24 @@ void ServiceSimulator::simulate()
 				logMsg("Entered lane", mCurrentTime,
 						lane[shortestLine].GetRear().getCustNum(), shortestLine);
 
+				logMsg("Entered lane count", mCurrentTime,
+						lane[shortestLine].GetRear().getCustNum(),
+						lane[shortestLine].getCount());
 
-				// If only 1 customer is in the line, then update the cashier's
-				// wait time.
-				if ( cashiers[shortestLine].getCustInLine() == 1 &&
-						cashiers[shortestLine].getTimeLimit() == 0)
-				{
-					int currentSerTime = lane[shortestLine].
-											GetFront().getServiceTime();
-					cashiers[shortestLine].setTimeLimit(currentSerTime);
 
-					// Remove customer from line to be processed.
-					lane[shortestLine].Dequeue();
-					cashiers[shortestLine].reduceCustInLine();
-				}
+//				// If only 1 customer is in the line, then update the cashier's
+//				// wait time.
+//				if ( cashiers[shortestLine].getCustInLine() == 1 &&
+//						cashiers[shortestLine].getTimeLimit() == 0)
+//				{
+//					int currentSerTime = lane[shortestLine].
+//											GetFront().getServiceTime();
+//					cashiers[shortestLine].setTimeLimit(currentSerTime);
+//
+//					// Remove customer from line to be processed.
+//					lane[shortestLine].Dequeue();
+//					cashiers[shortestLine].reduceCustInLine();
+//				}
 
 			}
 
@@ -152,7 +155,7 @@ void ServiceSimulator::simulate()
 		}
 
 		// Process the customers
-		processCustomer(lane, cashiers, frontCustomers);
+		processCustomer(lane, cashiers);
 
 		incrementTime();
 	}
@@ -319,6 +322,7 @@ void ServiceSimulator::readInputCust(Queue* dailyCustomers) {
 				string custNum;
 				string timeStamp;
 				string serviceTime;
+				int custNumVal;
 				int timeStampVal;
 				int serviceTimeVal;
 
@@ -342,14 +346,17 @@ void ServiceSimulator::readInputCust(Queue* dailyCustomers) {
 
 				// Converts time stamp and service time to integers
 				stringstream convert1;
-				convert1 << timeStamp;
-				convert1 >> timeStampVal;
+				convert1 << custNum;
+				convert1 >> custNumVal;
 				stringstream convert2;
-				convert2 << serviceTime;
-				convert2 >> serviceTimeVal;
+				convert2 << timeStamp;
+				convert2 >> timeStampVal;
+				stringstream convert3;
+				convert3 << serviceTime;
+				convert3 >> serviceTimeVal;
 
 				// Creates temp customer and adds it to the queue
-				Customer temp(timeStampVal, serviceTimeVal);
+				Customer temp(custNumVal, timeStampVal, serviceTimeVal);
 
 				dailyCustomers->Enqueue(temp);
 			}
@@ -362,18 +369,20 @@ void ServiceSimulator::readInputCust(Queue* dailyCustomers) {
 }
 
 
+// TODO Why is cust 9 not appearing?
 
-void ServiceSimulator::processCustomer(Queue lane[], Cashier cashiers[],
-										Queue frontCust[]) {
+
+void ServiceSimulator::processCustomer(Queue lane[], Cashier cashiers[])
+{
 
 	for (int i = 0; i < mParms.numOfCashiers; i++)
 	{
 
-
-
 		// If time limit for current customer is 0, then move on to next
-		if ( cashiers[i].isAvailable() )
+		if ( cashiers[i].isAvailable() && !lane[i].isEmpty())
 		{
+
+			cashiers[i].setTimeLimit( lane[i].GetFront().getServiceTime() );
 
 			logMsg("Wait time", mCurrentTime,
 					lane[i].GetFront().getCustNum(),
@@ -382,34 +391,58 @@ void ServiceSimulator::processCustomer(Queue lane[], Cashier cashiers[],
 			mTotWaitTime += (mCurrentTime -
 								lane[i].GetFront().getTimeStamp());
 
+			lane[i].Dequeue();
 
-			logMsg("Processed in lane", mCurrentTime, lane[i].GetFront().getCustNum(), i);
+			// Subtracts 1 from number of customers in line and updates
+			// the new service time for next customer if one in line
+			cashiers[i].reduceCustInLine();
 
+			cashiers[i].setAvailability(false);
+			cashiers[i].reduceTimeLimit();
 
-			// Just verifies that the current lane is not empty
-			if (!lane[i].isEmpty())
+		}
+		else if ( !cashiers[i].isAvailable() && lane[i].isEmpty() )
+		{
+			if ( cashiers[i].getTimeLimit() == 0 )
 			{
-				if (cashiers[i].getCustInLine() != 0)
-				{
-					cashiers[i].setTimeLimit(
-						lane[i].GetFront().getServiceTime());
-				}
+
+
+				cashiers[i].setAvailability(true);
+				cashiers[i].reduceCustInLine();
+				mNumberServiced++;
+
+				logMsg("Processed in lane", mCurrentTime,
+						mNumberServiced, i);
+			}
+			else
+			{
+				cashiers[i].reduceTimeLimit();
+			}
+		}
+		else if ( !cashiers[i].isAvailable() && !lane[i].isEmpty() )
+		{
+			if ( cashiers[i].getTimeLimit() == 0 )
+			{
+				cashiers[i].setTimeLimit( lane[i].GetFront().getServiceTime() );
+
+				logMsg("Wait time", mCurrentTime,
+						lane[i].GetFront().getCustNum(),
+						mCurrentTime - lane[i].GetFront().getTimeStamp());
+
+				mTotWaitTime += (mCurrentTime -
+									lane[i].GetFront().getTimeStamp());
 
 				lane[i].Dequeue();
 
-				// Subtracts 1 from number of customers in line and updates
-				// the new service time for next customer if one in line
 				cashiers[i].reduceCustInLine();
+				mNumberServiced++;
+				cashiers[i].reduceTimeLimit();
 
+				logMsg("Processed in lane", mCurrentTime,
+						mNumberServiced, i);
 			}
-
-			mNumberServiced++;
-		}
-		else
-		{
-			// Subtracts 1 from time to service customer if customers
-			// in line
-			if (cashiers[i].getCustInLine() != 0) {
+			else
+			{
 				cashiers[i].reduceTimeLimit();
 			}
 		}

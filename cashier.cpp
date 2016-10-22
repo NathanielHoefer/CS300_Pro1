@@ -52,3 +52,12 @@ bool Cashier::isFull()
 		return false;
 }
 
+
+bool Cashier::isAvailable()
+{
+	if ( mIsAvailable == true)
+		return true;
+	else
+		return false;
+}
+
