@@ -1,10 +1,9 @@
 /*****************************************************************************/
-
-/* Program 5 - Decimal to Binary Converter									 */
-/*****************************************************************************
+// Project 1 - Service Simulator
+/******************************************************************************
     Author: Nathaniel Hoefer
     Student ID: X529U639
-    Program: #5
+    Project: #1
 
 
 Description of the Problem:
@@ -23,6 +22,13 @@ Functions:
     	> Run simulation
     	> Output results
 
+
+TODO
+	- Implement seconds rather than minutes to have better accuracy when
+		generating
+	- Include additional variables such as frequency during time of day
+	- Include additional results such as generated average sales
+
  */
 
 #include "serviceSimulator.hpp"
@@ -38,7 +44,7 @@ int main()
 	ServiceParms parameters;
 
 	// The number of cashiers to be stationed
-	parameters.numOfCashiers = 2;
+	parameters.numOfCashiers = 3;
 
 	// The maximum number of customers per lane
 	parameters.lineMax = 6;
@@ -49,19 +55,49 @@ int main()
 	// True to read customers from file or false to generate daily customers
 	parameters.readInput = false;
 
-	// The minimum and maximum arrival time
+	// The minimum and maximum arrival time in minutes
 	parameters.arrTmMin = 1;
-	parameters.arrTmMax = 3;
+	parameters.arrTmMax = 5;
 
-	// The minimum and maximum service time
+	// The minimum and maximum service time in minutes
 	parameters.serTmMin = 1;
-	parameters.serTmMax = 10;
+	parameters.serTmMax = 20;
 
 	parameters.displayLogs = false;
 
 	ServiceSimulator sim(parameters);
 
 	sim.simulate();
+
+	ServiceSimulator sims[1000] = ServiceSimulator(parameters);
+	int custServiced = 0;
+	int turnedAway = 0;
+	int aveWaitTime = 0;
+	int totWaitTime = 0;
+
+	for ( int i = 0; i < 1000; i++ )
+	{
+		cout << "Simulation " << i << endl;
+		sims[i].simulate();
+
+		custServiced += sims[i].getnumberServiced();
+		turnedAway += sims[i].getTurnedAway();
+		totWaitTime += sims[i].getTotWaitTime();
+	}
+
+	aveWaitTime = totWaitTime / custServiced;
+
+	string title = "Complete Simulation results after ";
+	string custServicedSt = "Total number of customers serviced: ";
+	string custTurnedAway = "Total number of customers turned away: ";
+	string aveWaitTimeSt = "Average wait time: ";
+	string totWaitTimeSt = "Total wait time: ";
+
+	cout << title << 1000 << " days" << endl << endl;
+	cout << custServicedSt << custServiced << endl;
+	cout << custTurnedAway << turnedAway << endl;
+	cout << aveWaitTimeSt << aveWaitTime << endl;
+	cout << totWaitTimeSt << totWaitTime << endl;
 
 	return 0;
 }
