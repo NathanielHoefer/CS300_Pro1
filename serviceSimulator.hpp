@@ -230,7 +230,7 @@ public:
 private:
 
 	// Generates a random time between the min and max time entered.
-	int TimeGenerator(int minTime, int maxTime);
+	int TimeGenerator(int minTime, int maxTime, int seed);
 
 	// Increments the current time by 1
 	void incrementTime() {

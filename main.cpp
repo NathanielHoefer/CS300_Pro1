@@ -38,13 +38,13 @@ int main()
 	ServiceParms parameters;
 
 	// The number of cashiers to be stationed
-	parameters.numOfCashiers = 1;
+	parameters.numOfCashiers = 3;
 
 	// The maximum number of customers per lane
 	parameters.lineMax = 6;
 
 	// The total minutes in a single day
-	parameters.minInDay = 100;
+	parameters.minInDay = 570;
 
 	// True to read customers from file or false to generate daily customers
 	parameters.readInput = true;

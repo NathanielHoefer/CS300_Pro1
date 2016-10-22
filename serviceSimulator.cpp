@@ -14,6 +14,7 @@
 #include <fstream>
 #include <iostream>
 #include <sstream>
+#include <ctime>
 
 using namespace std;
 
@@ -70,7 +71,7 @@ void ServiceSimulator::simulate()
 
 	// Loop until day is completed + the max service time to account for any
 	// late customers still in line
-	while ( mCurrentTime < mParms.minInDay + mParms.SerTmMax)
+	while ( mCurrentTime < mParms.minInDay + (mParms.SerTmMax * mParms.lineMax))
 	{
 
 		logMsg("Time of day", mCurrentTime);
@@ -179,11 +180,14 @@ Queue ServiceSimulator::PopulateCustomers()
 	Queue dailyCustomers;
 
 	int custNum = 1;
+	srand(time(0));
 
 	// Randomly generates a time of arrival and time taken to service for each
 	// customer
-	int timeStamp = TimeGenerator(mParms.ArrTmMin, mParms.ArrTmMax);
-	int serviceTime = TimeGenerator(mParms.SerTmMin, mParms.SerTmMax);
+	int timeStamp = TimeGenerator(mParms.ArrTmMin,
+									mParms.ArrTmMax, custNum + 1);
+	int serviceTime = TimeGenerator(mParms.SerTmMin,
+									mParms.SerTmMax, custNum + 1);
 
 
 	// Opens Text file and saves each part until inventory is complete.
@@ -213,9 +217,13 @@ Queue ServiceSimulator::PopulateCustomers()
 		}
 
 		// Generate new values for the arrival and service time
-		timeStamp += TimeGenerator(mParms.ArrTmMin, mParms.ArrTmMax);
-		serviceTime = TimeGenerator(mParms.SerTmMin, mParms.SerTmMax);
+		timeStamp += TimeGenerator(mParms.ArrTmMin,
+									mParms.ArrTmMax, custNum + 1);
+		serviceTime = TimeGenerator(mParms.SerTmMin,
+									mParms.SerTmMax, custNum + 1);
+
 		custNum++;
+
 
 	} while ( timeStamp <= mParms.minInDay);
 
@@ -287,9 +295,14 @@ float ServiceSimulator::AveWaitTime()
 //		Preconditions: None
 //		Postconditions: None
 //		Returns: minTime <= time <= maxTime
-int ServiceSimulator::TimeGenerator(int minTime, int maxTime)
+int ServiceSimulator::TimeGenerator(int minTime, int maxTime, int seed)
 {
 	int range = maxTime - minTime + 1;
+	int randSeed = (61 * seed + 46) % 647;
+	randSeed = (time(0) * randSeed) + randSeed;
+	cout << randSeed << endl;
+
+
 
 	return rand() % range + minTime;
 }
