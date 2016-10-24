@@ -202,14 +202,23 @@ public:
 // Accessors and Mutators
 
 	ServiceParms getServParms() { return mParms; };
+
 	int getCurrentTime() { return mCurrentTime; };
+
 	int getnumberServiced() { return mNumberServiced; };
+
 	int getTurnedAway() { return mTurnedAway; };
+
 	int getTotWaitTime() { return mTotWaitTime; };
+
 	void setServParms(ServiceParms parms) { mParms = parms; };
+
 	void setCurrentTime(int time) { mCurrentTime = time; };
+
 	void setNumberServiced(int num) { mNumberServiced = num; };
+
  	void setTurnedAway(int num) { mTurnedAway = num; };
+
 	void setTotWaitTime(int time) { mTotWaitTime = time; };
 
 
@@ -228,10 +237,19 @@ public:
 	// Prints out the results of the simulation and creates an output file.
 	void OutputResults();
 
-	void logMsg(string output, int period = 00, int custNum = 00, int info = 00);
+	// Display the output message, along with the time (period), the customer
+	// number and an additional integer if needed
+	void logMsg(string output, int period = 0, int custNum = 0, int info = 0);
 
 
 private:
+
+	// Read input from a file or generate a queue of daily customers
+	void readInputCust(Queue* dailyCustomers);
+
+	// Allows the cashier to process the customers from the lane and records the
+	// specific data
+	void processCustomer(Queue lane[], Cashier cashiers[]);
 
 	// Generates a random time between the min and max time entered.
 	int TimeGenerator(int minTime, int maxTime);
@@ -240,10 +258,9 @@ private:
 	void incrementTime() {
 		mCurrentTime++;
 	}
-	void readInputCust(Queue* dailyCustomers);
 
-	void processCustomer(Queue lane[], Cashier cashiers[]);
-
+	// WIP, Generates a series of simulations for further accurate results
+	void SimulateSeries(ServiceSimulator parameters);
 
 };
 

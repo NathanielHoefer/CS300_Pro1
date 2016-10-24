@@ -106,10 +106,15 @@ public:
 // Accessors and Mutators
 
 	Node* getFrontNode() { return mFront; };
+
 	Node* getRearNode() { return mRear; };
+
 	int getCount() { return mCount; };
+
 	void setFrontNode(Node* ptr) { mFront = ptr; };
+
 	void setRearNode(Node* ptr) { mRear = ptr; };
+
 	void setCount(int count) { mCount = count; };
 
 

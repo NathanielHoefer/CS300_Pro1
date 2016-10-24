@@ -53,6 +53,10 @@ bool Cashier::isFull()
 }
 
 
+// Determines if the cashier is available
+//		Preconditions: None
+//		Postconditions: None
+//		Returns: True if cashier is available to take another customer
 bool Cashier::isAvailable()
 {
 	if ( mIsAvailable == true)

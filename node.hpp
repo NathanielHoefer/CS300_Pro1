@@ -46,7 +46,7 @@ class Node
 	Customer mCustomer;
 
 	// Pointer to next node in stack
-	Node *mNextNode;
+	Node* mNextNode;
 
 
 	public:
@@ -59,8 +59,11 @@ class Node
 
 // Mutator and Accessor Functions
 	void setNextPointer(Node *prt) { mNextNode = prt; };
+
 	void setCust(Customer cust) { mCustomer = cust; };
-	Node * getNextPointer() { return mNextNode; };
+
+	Node* getNextPointer() { return mNextNode; };
+
 	Customer getCust() { return mCustomer; };
 
 };

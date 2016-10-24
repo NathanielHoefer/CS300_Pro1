@@ -86,15 +86,25 @@ public:
 // Accessors and Mutators
 
 	int getCustInLine() { return mCustInLine; };
+
 	int getTimeLimit() { return mTimeLimit; };
+
 	int getMaxInLine() { return mMaxInLine; };
+
 	void setCustInLine(int cust) { mCustInLine = cust; };
+
 	void reduceCustInLine() { mCustInLine--; };
+
 	void increaseCustInLine() { mCustInLine++; };
+
 	void setTimeLimit(int timeLimit) { mTimeLimit = timeLimit; };
+
 	void reduceTimeLimit() { mTimeLimit--; };
+
 	void setMaxInLine(int lineMax) { mMaxInLine = lineMax; };
+
 	void setAvailability(bool isAvail) { mIsAvailable = isAvail; };
+
 
 
 // METHODS ********************************************************************
@@ -102,6 +112,7 @@ public:
 	// Determines if the line is full.
 	bool isFull();
 
+	// Determines if the cashier is available
 	bool isAvailable();
 
 };

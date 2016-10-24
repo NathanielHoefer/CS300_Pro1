@@ -67,17 +67,24 @@ public:
 // CONSTRUCTORS ***************************************************************
 
 	Customer();
+
 	Customer(int timeStamp, int serviceTime);
+
 	Customer(int custNum, int timeStamp, int serviceTime);
 
 
 // Accessors and Mutators
 
 	int getCustNum() { return mCustNum; };
+
 	int getTimeStamp() { return mTimeStamp; };
+
 	int getServiceTime() { return mServiceTime; };
+
 	void setCustNum(int custNum) { mCustNum = custNum; };
+
 	void setTimeStamp(int timeStamp) { mTimeStamp = timeStamp; };
+
 	void setServiceTime(int serviceTime) { mServiceTime = serviceTime; };
 
 };

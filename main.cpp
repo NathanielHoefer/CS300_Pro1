@@ -19,11 +19,11 @@ Functions:
     + main() - Carry out simulation based on parameters provided and output the
     	results.
     	> Initialize parameters
-    	> Run simulation
-    	> Output results
+    	> Run simulation which outputs results
 
 
 TODO
+	- Fix seed issue when generating multiple sims at once
 	- Implement seconds rather than minutes to have better accuracy when
 		generating
 	- Include additional variables such as frequency during time of day
@@ -68,36 +68,6 @@ int main()
 	ServiceSimulator sim(parameters);
 
 	sim.simulate();
-
-	ServiceSimulator sims[1000] = ServiceSimulator(parameters);
-	int custServiced = 0;
-	int turnedAway = 0;
-	int aveWaitTime = 0;
-	int totWaitTime = 0;
-
-	for ( int i = 0; i < 1000; i++ )
-	{
-		cout << "Simulation " << i << endl;
-		sims[i].simulate();
-
-		custServiced += sims[i].getnumberServiced();
-		turnedAway += sims[i].getTurnedAway();
-		totWaitTime += sims[i].getTotWaitTime();
-	}
-
-	aveWaitTime = totWaitTime / custServiced;
-
-	string title = "Complete Simulation results after ";
-	string custServicedSt = "Total number of customers serviced: ";
-	string custTurnedAway = "Total number of customers turned away: ";
-	string aveWaitTimeSt = "Average wait time: ";
-	string totWaitTimeSt = "Total wait time: ";
-
-	cout << title << 1000 << " days" << endl << endl;
-	cout << custServicedSt << custServiced << endl;
-	cout << custTurnedAway << turnedAway << endl;
-	cout << aveWaitTimeSt << aveWaitTime << endl;
-	cout << totWaitTimeSt << totWaitTime << endl;
 
 	return 0;
 }
