@@ -48,11 +48,11 @@ void ServiceSimulator::simulate()
 
 
 	// Creates a number of cashiers equal to the entered parameter
-	Cashier cashiers[mParms.numOfCashiers] = Cashier(mParms.lineMax);
-//	for ( int i = 0; i < mParms.numOfCashiers; i++)
-//	{
-//		cashiers[i].setMaxInLine(mParms.lineMax);
-//	}
+	Cashier cashiers[mParms.numOfCashiers];
+	for ( int i = 0; i < mParms.numOfCashiers; i++)
+	{
+		cashiers[i].setMaxInLine(mParms.lineMax);
+	}
 
 	// Creates the lanes as queues for each customer
 	Queue lane[mParms.numOfCashiers];
@@ -69,9 +69,8 @@ void ServiceSimulator::simulate()
 
 	bool allLinesFull = true;
 
-	// Loop until day is completed + the max service time to account for any
-	// late customers still in line after store closes
-	while ( mCurrentTime < mParms.minInDay + (mParms.serTmMax * mParms.lineMax))
+	// Loop until day is completed which is 570 min per Dr. Hixon.
+	while ( mCurrentTime < mParms.minInDay)
 	{
 
 		logMsg("Time of day", mCurrentTime);

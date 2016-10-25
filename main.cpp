@@ -53,7 +53,7 @@ int main()
 	parameters.minInDay = 570;
 
 	// True to read customers from file or false to generate daily customers
-	parameters.readInput = false;
+	parameters.readInput = true;
 
 	// The minimum and maximum arrival time in minutes
 	parameters.arrTmMin = 1;
