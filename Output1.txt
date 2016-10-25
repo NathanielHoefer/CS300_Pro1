@@ -1,0 +1,6 @@
+Simulation results
+
+Total number of customers serviced: 180
+Total number of customers turned away: 5
+Average wait time: 41
+Total wait time: 7458

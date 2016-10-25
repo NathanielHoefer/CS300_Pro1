@@ -232,6 +232,11 @@ void ServiceSimulator::readInputCust(Queue* dailyCustomers) {
 
 		if (readFile.is_open())
 		{
+
+			// Ignores the first line since the customer count is automatically
+			// calculated.
+			getline(readFile, fileLine);
+
 			// Reads each line and uses parse function to store data
 			// ParseLine will return 0 if an there is an issue with opening
 			// the file.
